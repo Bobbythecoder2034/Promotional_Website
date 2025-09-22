@@ -1,0 +1,17 @@
+[
+  {
+    "name": "test",
+    "email": "test@test.edu",
+    "newsOrInfo": "News"
+  },
+  {
+    "name": "john",
+    "email": "bob@firefox.gov",
+    "newsOrInfo": "News"
+  },
+  {
+    "name": "jon",
+    "email": "bob@firefox.gov",
+    "newsOrInfo": "News"
+  }
+]
