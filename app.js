@@ -9,9 +9,17 @@ const app = express()
 const PORT = 5000
 
 //Path to the submissions.json
-const database = path.join(__dirname, 'submissions.json')
+const database = path.join(__dirname, './data/submissions.json')
 
-//Middleware
+// Middleware
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+
+// Static Folder
+app.use(express.static(path.join(__dirname,"public")))
+
+
+
 //Part 1: Parse JSON request body when the client send Content-Type: application.json
 app.use(express.json())
 //Part 2: Request logger through morgan
@@ -46,9 +54,7 @@ async function writeDB(data){
     const text = JSON.stringify(data, null, 2)
     await fs.writeFile(database, text, 'utf-8')
 }
-if(localStorage.getItem("Database") !== undefined){
-    // writeDB(JSON.parse(localStorage.getItem("Database")))
-}
+
 //Routes
 app.get('/',(req,res)=>{
     res.status(200).json({
@@ -123,7 +129,7 @@ app.post('/submissions',async(req,res)=>{
         const newSubmission = {name, email, newsOrInfo}
         submissions.push(newSubmission)
         await writeDB(submissions)
-        res.status(201).json(newSubmission)
+        res.redirect(`http://localhost:${PORT}`)
         toString()
     }catch(err){
         console.error(err)
