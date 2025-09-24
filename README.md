@@ -1,6 +1,6 @@
 # Promotion Website
 
-This project can be used as the promotional and sign up page for a product. It is currently tailored for ______
+This project can be used as the promotional and sign up page for a product. It is currently tailored for Hollow Knight Plushies
 
 ## Run Locally
 
