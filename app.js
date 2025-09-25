@@ -54,14 +54,23 @@ async function writeDB(data){
     const text = JSON.stringify(data, null, 2)
     await fs.writeFile(database, text, 'utf-8')
 }
-
-//Routes
-app.get('/',(req,res)=>{
-    res.status(200).json({
-        message:"Submission API is Running",
-        endpoints:["/sumbissions (GET, POST)", "/submissions/:name (GET, POST, PUT, DELETE"]
-    })
+app.get('/admin',(req,res)=>{
+    console.log(req.query.username)
+    // if(username == "Kaden"){
+        res.sendFile(path.join(__dirname,"admin/admin.html"))
+    // }
+    
 })
+app.use('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,"public/login.html"))
+})
+//Routes (Maybe useful, idk)
+// app.get('/',(req,res)=>{
+//     res.status(200).json({
+//         message:"Submission API is Running",
+//         endpoints:["/sumbissions (GET, POST)", "/submissions/:name (GET, POST, PUT, DELETE"]
+//     })
+// })
 
 /*
 *GET /submissions
