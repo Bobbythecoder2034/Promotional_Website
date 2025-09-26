@@ -55,11 +55,13 @@ async function writeDB(data){
     await fs.writeFile(database, text, 'utf-8')
 }
 app.get('/admin',(req,res)=>{
-    console.log(req.query.username)
     // if(username == "Kaden"){
         res.sendFile(path.join(__dirname,"admin/admin.html"))
     // }
     
+})
+app.get('/home',(req,res)=>{
+    res.sendFile(path.join(__dirname,"public/home.html"))
 })
 app.use('/',(req,res)=>{
     res.sendFile(path.join(__dirname,"public/login.html"))
