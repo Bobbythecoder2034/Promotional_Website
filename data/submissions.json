@@ -3,15 +3,5 @@
     "name": "test",
     "email": "test@test.edu",
     "newsOrInfo": "News"
-  },
-  {
-    "name": "Kaden",
-    "email": "me@ncmx.org",
-    "newsOrInfo": "info"
-  },
-  {
-    "name": "Karen",
-    "email": "kkoala110@gmail.com",
-    "newsOrInfo": "info"
   }
 ]

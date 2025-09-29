@@ -6,13 +6,14 @@
     <title>Login</title>
 </head>
 <body>
-    <form method="GET" action="/admin">
+    <form method="POST" action="/admin/superSecret">
         <label>Admin Login
             <input type="text" name="username" required placeholder="Username">
+            <input type="text" name="password" required placeholder="Password">
         </label>
        <button type="submit">login</button>
     </form>
-    <form method="GET" action="/home">
+    <form method="POST" action="/home">
         <label>Don't have an account?
             <button type="submit">Make new account</button>
         </label>

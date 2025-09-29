@@ -1,5 +1,6 @@
 const express = require('express')
 const fs = require('fs/promises')
+const {readFileSync, writeFileSync} = require('fs')
 const path = require('path')
 const morgan = require('morgan')
 var LocalStorage = require('node-localstorage').LocalStorage;
@@ -10,7 +11,7 @@ const PORT = 5000
 
 //Path to the submissions.json
 const database = path.join(__dirname, './data/submissions.json')
-
+const adminBase = path.join(__dirname,"./data/admin.json")
 // Middleware
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
@@ -54,17 +55,25 @@ async function writeDB(data){
     const text = JSON.stringify(data, null, 2)
     await fs.writeFile(database, text, 'utf-8')
 }
-app.get('/admin',(req,res)=>{
-    // if(username == "Kaden"){
+app.post('/admin/superSecret',(req,res)=>{
+    const {username, password} = req.body
+    const admins = readFileSync(adminBase, 'utf-8')
+    const checkDatabase = JSON.parse(admins).find(x=>{
+        return (x.username == username && x.password == password)
+    })
+    if(checkDatabase){
         res.sendFile(path.join(__dirname,"admin/admin.html"))
-    // }
-    
+    }else{
+        res.status(401).json({error:"Invalid Login"})
+    }
 })
-app.get('/home',(req,res)=>{
+
+app.post('/home',(req,res)=>{
     res.sendFile(path.join(__dirname,"public/home.html"))
 })
-app.use('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,"public/login.html"))
+
+app.get('/admin/css',(req,res)=>{
+    res.sendFile(path.join(__dirname,"./admin/admin.css"))
 })
 //Routes (Maybe useful, idk)
 // app.get('/',(req,res)=>{
@@ -131,7 +140,7 @@ app.post('/submissions',async(req,res)=>{
             return res.status(400).json({error: "Invalid Body. Required:name, email, newsOrInfo"})
         }
         const submissions = await readDB()
-        if(submissions.some(s => s.name.toLowerCase() ==name.toLowerCase())){
+        if(submissions.some(s => s.name.toLowerCase() == name.toLowerCase())){
             return res.status(409).json({
                 error:"Name already exists"
             })
@@ -223,14 +232,17 @@ app.delete('/submissions/:name', async (req,res) => {
  * REQUEST BODY: none
  * RESPONSE 404
  */
-app.use((req, res) => {
-    res.status(404).json({error:"Page not found"}); 
-});
+
 
 function toString(){
     const datas = JSON.stringify(readDB())
     localStorage.setItem("Database", datas);
 }
-
+app.use('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,"public/login.html"))
+})
+app.use((req, res) => {
+    res.status(404).json({error:"Page not found"}); 
+});
 //Start Server
 app.listen(PORT,()=>{console.log(`Server is listening on http://localhost:${PORT}`)})
