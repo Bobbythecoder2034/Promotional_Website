@@ -11,6 +11,7 @@ const PORT = 5000
 
 //Path to the submissions.json
 const database = path.join(__dirname, './data/submissions.json')
+const trueDatabase = path.join(__dirname, './data/approvedSubmissions.json')
 const adminBase = path.join(__dirname,"./data/admin.json")
 // Middleware
 app.use(express.urlencoded({extended:true}))
@@ -55,7 +56,7 @@ async function writeDB(data){
     const text = JSON.stringify(data, null, 2)
     await fs.writeFile(database, text, 'utf-8')
 }
-app.post('/admin/superSecret',(req,res)=>{
+app.post('/admin',(req,res)=>{
     const {username, password} = req.body
     const admins = readFileSync(adminBase, 'utf-8')
     const checkDatabase = JSON.parse(admins).find(x=>{
@@ -63,6 +64,18 @@ app.post('/admin/superSecret',(req,res)=>{
     })
     if(checkDatabase){
         res.sendFile(path.join(__dirname,"admin/admin.html"))
+    }else{
+        res.status(401).json({error:"Invalid Login"})
+    }
+})
+app.post('/customer/special',(req,res)=>{
+    const {name, email} = req.body
+    const people = readFileSync(trueDatabase, 'utf-8')
+    const checkDatabase = JSON.parse(people).find(x=>{
+        return (x.name == name && x.email == email)
+    })
+    if(checkDatabase){
+        res.status(200).json({nothing:"Page in Progress"})
     }else{
         res.status(401).json({error:"Invalid Login"})
     }
@@ -75,14 +88,18 @@ app.post('/home',(req,res)=>{
 app.get('/admin/css',(req,res)=>{
     res.sendFile(path.join(__dirname,"./admin/admin.css"))
 })
-//Routes (Maybe useful, idk)
-// app.get('/',(req,res)=>{
-//     res.status(200).json({
-//         message:"Submission API is Running",
-//         endpoints:["/sumbissions (GET, POST)", "/submissions/:name (GET, POST, PUT, DELETE"]
-//     })
-// })
-
+app.get('/admin/node',(req,res)=>{
+    res.sendFile(path.join(__dirname,"./app.js"))
+})
+app.get('/admin/script',(req,res)=>{
+    res.sendFile(path.join(__dirname,"./admin/admin.js"))
+})
+app.get('/data/approved',(req,res)=>{
+    res.sendFile(path.join(__dirname,"./data/approvedSubmissions.json"))
+})
+app.get('/data/notApproved',(req,res)=>{
+    res.sendFile(path.join(__dirname,"./data/submissions.json"))
+})
 /*
 *GET /submissions
 *Purpose: Read all submissions
@@ -92,36 +109,17 @@ app.get('/admin/css',(req,res)=>{
 *REQUEST BODY: none
 *RESPONSE: 200 OPK + JSON Array
 */
-app.get('/submissions',async(req,res)=>{
-    try {
-        const submissions = await readDB()
-        res.status(200).json(submissions)
-    } catch (err){
-        console.error(err)
-        res.status(500).json({error:"Server Failed to read all submissions"})
-    }
-})
+// app.get('/submissions',async(req,res)=>{
+//     try {
+//         const submissions = await readDB()
+//         res.status(200).json(submissions)
+//     } catch (err){
+//         console.error(err)
+//         res.status(500).json({error:"Server Failed to read all submissions"})
+//     }
+// })
 
-/**
- * Get /submissions/:name
- * Purpose: Read a single submissionname
- * METHOD: GET
- * URL PARAM:name
- * RESPONSE: 200 ok + JSON object or 404
- */
-app.get('/submissions/:name',async(req,res)=>{
-    try{
-        const submissions = await readDB()
-        const submission = submissions.find(s => s.name === Number(req.params.name))
-        if(!submission){
-            return res.status(404).json({error:"submission not Found"})
-        }
-        res.status(200).json(submission)
-    }catch(err){
-        console.error(err)
-        res.status(500).json({error:"Server failed to read submissions"})
-    }
-})
+
 
 /**
  * POST /submissions
@@ -145,8 +143,12 @@ app.post('/submissions',async(req,res)=>{
                 error:"Name already exists"
             })
         }
-        
-        const newSubmission = {name, email, newsOrInfo}
+        const newSubmission = {
+            ...req.body,
+            
+            status: "new",
+            id: (Date.now().toString(36)+Math.random().toString(36).slice(2,8).toUpperCase())
+        }
         submissions.push(newSubmission)
         await writeDB(submissions)
         res.redirect(`http://localhost:${PORT}`)

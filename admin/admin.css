@@ -51,3 +51,36 @@ input{
         grid-template-columns:  1fr;
     }
 }
+.card{
+    background-color: rgb(94, 213, 148);
+    border-radius: 15px;
+    width: 13rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    margin: 3rem;
+
+}
+.title{
+    font-size: xx-large;
+    background-color: rgb(79, 180, 124);
+    border-radius: 15px;
+    width: 15rem;
+    text-wrap: wrap;
+    text-align:center;
+    margin-bottom: 1rem;
+}
+.subtitle{
+    font-size: medium;
+    font-weight: lighter;
+}
+section > p{
+    font-size: large;
+    text-wrap: wrap;
+    margin-bottom: .5rem;
+}
+button{
+    border: 1px black solid;
+}

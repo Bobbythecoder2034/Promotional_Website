@@ -3,5 +3,22 @@
     "name": "test",
     "email": "test@test.edu",
     "newsOrInfo": "News"
+  },
+  {
+    "name": "Monte",
+    "email": "halfblood@bum.edu",
+    "newsOrInfo": "news"
+  },
+  {
+    "name": "Christmas",
+    "email": "me@ncmx.org",
+    "newsOrInfo": "info"
+  },
+  {
+    "name": "jojj",
+    "email": "halfblood@bum.edu",
+    "newsOrInfo": "info",
+    "status": "new",
+    "id": "mg73kn6i551DLP"
   }
 ]
